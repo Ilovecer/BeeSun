@@ -1,0 +1,15 @@
+name: WellSun
+version: 1.0.0
+main: ru.amiloxs.wellsun.WellSun
+api-version: '1.16'
+authors: [Amiloxs]
+website: https://t.me/BeeDevelopers
+commands:
+  wellsun:
+    description: Управление WellSun
+    usage: /wellsun [reload|editor]
+    aliases: [wellsun]
+    permission: wellsun.admin
+permissions:
+  wellsun.admin:
+    default: op

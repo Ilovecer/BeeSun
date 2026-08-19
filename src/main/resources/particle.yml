@@ -1,0 +1,89 @@
+# ==================================================================== #
+#            https://t.me/BeeDevelopers- Твоя любимая студия           #
+# ==================================================================== #
+# Документация по частицам (Particle) и звукам (Sound):
+#
+# Популярные частицы:
+# DUST (или REDSTONE) - цветная пыль (настраивается RGB цвет и размер)
+# FLAME - огонь
+# SOUL_FIRE_FLAME - огонь душ (бирюзовый)
+# PORTAL - портальные фиолетовые частицы
+# ENCHANTMENT_TABLE - глифы зачарования
+# DRAGON_BREATH - дыхание дракона
+# SPELL_WITCH - частицы ведьмы (фиолетовые вспышки)
+# TOTEM - частицы срабатывания тотема
+# VILLAGER_HAPPY - зеленые звездочки счастья
+# CRIT - критический урон
+# FIREWORKS_SPARK - искры салюта
+# HEART - сердечки
+# SMOKE_NORMAL - дым
+#
+# Популярные звуки:
+# BLOCK_NOTE_BLOCK_CHIME - колокольчик нотного блока
+# BLOCK_BEACON_POWER_SELECT - активация маяка
+# BLOCK_BEACON_AMBIENT - гудение маяка
+# ENTITY_EXPERIENCE_ORB_PICKUP - подбор сферы опыта
+# ENTITY_PLAYER_LEVELUP - повышение уровня
+# BLOCK_RESPAWN_ANCHOR_CHARGE - зарядка якоря
+# BLOCK_RESPAWN_ANCHOR_DEPLETE - разрядка якоря
+# BLOCK_ANVIL_USE - использование наковальни
+# ENTITY_ITEM_PICKUP - подбор предмета
+# ==================================================================== #
+
+effects:
+  # Круговой эффект вокруг якоря
+  circle:
+    enabled: true
+    # Тип частицы (DUST, FLAME, SOUL_FIRE_FLAME, PORTAL и т.д.)
+    particle: DUST
+    # Радиус круга в блоках
+    radius: 5.0
+    # Количество точек (частиц) в круге
+    points: 48
+    # Смещение по высоте относительно низа якоря
+    y-offset: 0.12
+    # Размер частицы (для DUST)
+    size: 1.5
+    # RGB цвет частицы (для DUST)
+    color:
+      r: 170
+      g: 0
+      b: 255
+
+  # Эффект следа (шлейфа) за выброшенными предметами
+  item-trail:
+    enabled: true
+    # Тип частицы для следа
+    particle: DUST
+    # Размер частицы (для DUST)
+    size: 1.5
+    # Количество частиц на предмете за один такт
+    count: 3
+    # Сколько секунд след отображается
+    visible-seconds: 1.5
+    # Сколько секунд след скрыт (пауза между миганиями)
+    hidden-seconds: 3.0
+    # RGB цвет следа (для DUST)
+    color:
+      r: 170
+      g: 0
+      b: 255
+
+sounds:
+  # Фоновый периодический звук вокруг якоря
+  ambient:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_CHIME
+    # Интервал воспроизведения в секундах
+    interval-seconds: 5
+    # Громкость звука (от 0.0 до 1.0+)
+    volume: 0.7
+    # Тональность звука (от 0.5 до 2.0)
+    pitch: 1.0
+
+  # Звук при выпадении награды и предметов
+  drop:
+    enabled: true
+    sound: ENTITY_EXPERIENCE_ORB_PICKUP
+    volume: 1.0
+    pitch: 1.2
