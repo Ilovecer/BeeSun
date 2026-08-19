@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.editor;
+package ru.amiloxs.beesun.editor;
 
 import java.util.List;
 import java.util.Map;
@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.amiloxs.wellsun.WellSun;
+import ru.amiloxs.beesun.BeeSun;
 
 public final class EditorGui {
 
     private EditorGui() {}
 
-    public static void open(Player player, int requestedPage, WellSun plugin) {
+    public static void open(Player player, int requestedPage, BeeSun plugin) {
         final int totalPages = plugin.getItemStorage().getTotalPages();
         final int page = Math.max(1, Math.min(requestedPage, totalPages));
 
@@ -24,7 +24,7 @@ public final class EditorGui {
         if (titleRaw == null || titleRaw.isEmpty()) {
             titleRaw = "<#00D8FF>&lЯдро Солнца &8| &fПредметы &7(Стр. %page%/%max_page%)";
         }
-        String title = WellSun.color(titleRaw
+        String title = BeeSun.color(titleRaw
                 .replace("%page%/2", "%page%/" + totalPages)
                 .replace("%page%", String.valueOf(page))
                 .replace("%max_page%", String.valueOf(totalPages))
@@ -109,10 +109,10 @@ public final class EditorGui {
         ItemMeta meta = stack.getItemMeta();
         if (meta != null) {
             if (name != null && !name.isEmpty()) {
-                meta.setDisplayName(WellSun.color(name));
+                meta.setDisplayName(BeeSun.color(name));
             }
             if (lore != null && !lore.isEmpty()) {
-                meta.setLore(lore.stream().map(WellSun::color).collect(Collectors.toList()));
+                meta.setLore(lore.stream().map(BeeSun::color).collect(Collectors.toList()));
             }
             stack.setItemMeta(meta);
         }

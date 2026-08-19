@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.amiloxs</groupId>
-    <artifactId>WellSun</artifactId>
+    <artifactId>BeeSun</artifactId>
     <version>1.0.0</version>
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
@@ -18,7 +18,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>WellSun</finalName>
+        <finalName>BeeSun</finalName>
         <resources><resource><directory>src/main/resources</directory></resource></resources>
     </build>
 </project>

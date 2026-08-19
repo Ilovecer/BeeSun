@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.command;
+package ru.amiloxs.beesun.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,23 +9,23 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import ru.amiloxs.wellsun.WellSun;
-import ru.amiloxs.wellsun.editor.EditorGui;
-import ru.amiloxs.wellsun.service.WellService;
+import ru.amiloxs.beesun.BeeSun;
+import ru.amiloxs.beesun.editor.EditorGui;
+import ru.amiloxs.beesun.service.BeeService;
 
-public final class WellSunCommand implements CommandExecutor, TabCompleter {
-    private final WellSun plugin;
-    private final WellService service;
+public final class BeeSunCommand implements CommandExecutor, TabCompleter {
+    private final BeeSun plugin;
+    private final BeeService service;
 
-    public WellSunCommand(WellSun plugin, WellService service) {
+    public BeeSunCommand(BeeSun plugin, BeeService service) {
         this.plugin = plugin;
         this.service = service;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("wellsun.admin") && !sender.isOp()) {
-            sender.sendMessage(WellSun.color(plugin.files().message("no-permission")));
+        if (!sender.hasPermission("beesun.admin") && !sender.isOp()) {
+            sender.sendMessage(BeeSun.color(plugin.files().message("no-permission")));
             return true;
         }
 
@@ -34,13 +34,13 @@ public final class WellSunCommand implements CommandExecutor, TabCompleter {
                 plugin.reloadConfig();
                 plugin.files().reload();
                 service.reload();
-                sender.sendMessage(WellSun.color(plugin.files().message("reloaded")));
+                sender.sendMessage(BeeSun.color(plugin.files().message("reloaded")));
                 return true;
             }
 
             if (args[0].equalsIgnoreCase("editor")) {
                 if (!(sender instanceof Player)) {
-                    sender.sendMessage(WellSun.color(plugin.files().message("only-players")));
+                    sender.sendMessage(BeeSun.color(plugin.files().message("only-players")));
                     return true;
                 }
                 Player player = (Player) sender;
@@ -52,19 +52,19 @@ public final class WellSunCommand implements CommandExecutor, TabCompleter {
                         .replace("%max_page%", String.valueOf(totalPages))
                         .replace("%max_pages%", String.valueOf(totalPages));
                 if (!msg.isEmpty()) {
-                    player.sendMessage(WellSun.color(msg));
+                    player.sendMessage(BeeSun.color(msg));
                 }
                 return true;
             }
         }
 
-        sender.sendMessage(WellSun.color(plugin.files().message("usage")));
+        sender.sendMessage(BeeSun.color(plugin.files().message("usage")));
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if ((sender.hasPermission("wellsun.admin") || sender.isOp()) && args.length == 1) {
+        if ((sender.hasPermission("beesun.admin") || sender.isOp()) && args.length == 1) {
             List<String> completions = new ArrayList<>();
             String input = args[0].toLowerCase();
             for (String sub : Arrays.asList("reload", "editor")) {

@@ -1,11 +1,11 @@
-package ru.amiloxs.wellsun.util;
+package ru.amiloxs.beesun.util;
 
 import java.util.EnumMap;
 import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ru.amiloxs.wellsun.WellSun;
+import ru.amiloxs.beesun.BeeSun;
 
 public final class ItemUtil {
     private static final Map<Material, String> RUSSIAN_NAMES = new EnumMap<>(Material.class);
@@ -132,14 +132,14 @@ public final class ItemUtil {
         if (stack.hasItemMeta()) {
             ItemMeta meta = stack.getItemMeta();
             if (meta != null && meta.hasDisplayName()) {
-                return WellSun.color(meta.getDisplayName());
+                return BeeSun.color(meta.getDisplayName());
             }
         }
         String ruName = RUSSIAN_NAMES.get(stack.getType());
         if (ruName != null) {
-            return WellSun.color("&f" + ruName);
+            return BeeSun.color("&f" + ruName);
         }
         String formatted = stack.getType().name().toLowerCase().replace('_', ' ');
-        return WellSun.color("&f" + Character.toUpperCase(formatted.charAt(0)) + formatted.substring(1));
+        return BeeSun.color("&f" + Character.toUpperCase(formatted.charAt(0)) + formatted.substring(1));
     }
 }

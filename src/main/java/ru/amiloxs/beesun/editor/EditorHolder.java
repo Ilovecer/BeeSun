@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.editor;
+package ru.amiloxs.beesun.editor;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;

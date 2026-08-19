@@ -28,7 +28,7 @@ anchor:
     second-mode: COINS
     switch-seconds: 300
 
-  # Настройки выпадения предметов из GUI редактора (/wellsun editor)
+  # Настройки выпадения предметов из GUI редактора (/beesun editor)
   item-drop:
     enabled: true
     min-count: 1

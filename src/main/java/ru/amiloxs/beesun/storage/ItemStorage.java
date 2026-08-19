@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.storage;
+package ru.amiloxs.beesun.storage;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,13 +12,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import ru.amiloxs.wellsun.WellSun;
+import ru.amiloxs.beesun.BeeSun;
 
 public final class ItemStorage {
-    private final WellSun plugin;
+    private final BeeSun plugin;
     private final Map<Integer, Map<Integer, ItemStack>> pages = new HashMap<>();
 
-    public ItemStorage(WellSun plugin) {
+    public ItemStorage(BeeSun plugin) {
         this.plugin = plugin;
     }
 

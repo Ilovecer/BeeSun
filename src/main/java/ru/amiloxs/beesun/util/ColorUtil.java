@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.util;
+package ru.amiloxs.beesun.util;
 
 import java.util.HashMap;
 import java.util.Map;

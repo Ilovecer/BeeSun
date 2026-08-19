@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.service;
+package ru.amiloxs.beesun.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +25,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import ru.amiloxs.wellsun.WellSun;
-import ru.amiloxs.wellsun.config.PluginFiles;
-import ru.amiloxs.wellsun.model.HologramLine;
-import ru.amiloxs.wellsun.util.ItemUtil;
+import ru.amiloxs.beesun.BeeSun;
+import ru.amiloxs.beesun.config.PluginFiles;
+import ru.amiloxs.beesun.model.HologramLine;
+import ru.amiloxs.beesun.util.ItemUtil;
 
-public final class WellService implements Listener {
-    private final WellSun plugin;
+public final class BeeService implements Listener {
+    private final BeeSun plugin;
     private final PluginFiles files;
     private final List<ArmorStand> hologramStands = new ArrayList<>();
     private final List<HologramLine> loadedLines = new ArrayList<>();
@@ -43,7 +43,7 @@ public final class WellService implements Listener {
     private long lastAmbient;
     private int taskId = -1;
 
-    public WellService(WellSun plugin, PluginFiles files) {
+    public BeeService(BeeSun plugin, PluginFiles files) {
         this.plugin = plugin;
         this.files = files;
     }
@@ -195,7 +195,7 @@ public final class WellService implements Listener {
                             .replace("%block_radius%", radiusStr)
                             .replace("%reward_mode%", rewardLabel())
                             .replace("%player_name%", player.getName());
-                    player.sendMessage(WellSun.color(formatted));
+                    player.sendMessage(BeeSun.color(formatted));
                 }
             }
         }
@@ -278,7 +278,7 @@ public final class WellService implements Listener {
             String text = loadedLines.get(i).getContent()
                     .replace("%time_prize%", seconds)
                     .replace("%reward_mode%", mode);
-            hologramStands.get(i).setCustomName(WellSun.color(text));
+            hologramStands.get(i).setCustomName(BeeSun.color(text));
         }
     }
 

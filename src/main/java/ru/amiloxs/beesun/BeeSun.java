@@ -1,17 +1,17 @@
-package ru.amiloxs.wellsun;
+package ru.amiloxs.beesun;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.amiloxs.wellsun.command.WellSunCommand;
-import ru.amiloxs.wellsun.config.PluginFiles;
-import ru.amiloxs.wellsun.editor.EditorListener;
-import ru.amiloxs.wellsun.service.WellService;
-import ru.amiloxs.wellsun.storage.ItemStorage;
-import ru.amiloxs.wellsun.util.ColorUtil;
+import ru.amiloxs.beesun.command.BeeSunCommand;
+import ru.amiloxs.beesun.config.PluginFiles;
+import ru.amiloxs.beesun.editor.EditorListener;
+import ru.amiloxs.beesun.service.BeeService;
+import ru.amiloxs.beesun.storage.ItemStorage;
+import ru.amiloxs.beesun.util.ColorUtil;
 
-public final class WellSun extends JavaPlugin {
-    private WellService wellService;
+public final class BeeSun extends JavaPlugin {
+    private BeeService beeService;
     private PluginFiles files;
     private ItemStorage itemStorage;
 
@@ -20,29 +20,29 @@ public final class WellSun extends JavaPlugin {
         saveDefaultConfig();
         itemStorage = new ItemStorage(this);
         files = new PluginFiles(this);
-        wellService = new WellService(this, files);
-        wellService.reload();
+        beeService = new BeeService(this, files);
+        beeService.reload();
 
-        PluginCommand command = getCommand("wellsun");
-        WellSunCommand executor = new WellSunCommand(this, wellService);
+        PluginCommand command = getCommand("beesun");
+        BeeSunCommand executor = new BeeSunCommand(this, beeService);
         if (command != null) {
             command.setExecutor(executor);
             command.setTabCompleter(executor);
         }
 
-        getServer().getPluginManager().registerEvents(wellService, this);
+        getServer().getPluginManager().registerEvents(beeService, this);
         getServer().getPluginManager().registerEvents(new EditorListener(this), this);
 
-        getLogger().info("WellSun успешно запущен.");
+        getLogger().info("BeeSun успешно запущен.");
         Bukkit.getScheduler().runTask(this, () -> Bukkit.getOnlinePlayers().stream()
-                .filter(player -> player.isOp() || player.hasPermission("wellsun.admin"))
+                .filter(player -> player.isOp() || player.hasPermission("beesun.admin"))
                 .forEach(player -> player.sendMessage(color(files.message("enabled")))));
     }
 
     @Override
     public void onDisable() {
-        if (wellService != null) {
-            wellService.close();
+        if (beeService != null) {
+            beeService.close();
         }
         if (itemStorage != null && files != null) {
             files.saveItemsStorage(itemStorage);

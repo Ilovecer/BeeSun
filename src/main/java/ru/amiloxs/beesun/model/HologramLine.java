@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.model;
+package ru.amiloxs.beesun.model;
 
 public final class HologramLine {
     private final String content;

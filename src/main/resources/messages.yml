@@ -5,7 +5,7 @@
 # Системные уведомления и права
 no-permission: '<#FF5555>▶ <white>Команды <gold>Ядра Солнца <white>доступны только <#00D8FF>администраторам<white>.'
 reloaded: '<#00D8FF>▶ <white>Конфигурация <gold>Ядра Солнца <white>успешно <#00D8FF>перезагружена<white>.'
-usage: '<#00D8FF>▶ <white>Использование: <#00D8FF>/wellsun reload <#E7E7E7>или <#00D8FF>/wellsun editor<white>.'
+usage: '<#00D8FF>▶ <white>Использование: <#00D8FF>/beesun reload <#E7E7E7>или <#00D8FF>/beesun editor<white>.'
 enabled: '<#00D8FF>▶ <white>Плагин <gold>Ядро Солнца <white>успешно <#00D8FF>активирован<white>.'
 only-players: '<#FF5555>▶ <white>Эту команду могут использовать только <#00D8FF>игроки в игре<white>.'
 
@@ -16,7 +16,7 @@ only-players: '<#FF5555>▶ <white>Эту команду могут исполь
 # %player_name% - ник вошедшего игрока
 enter-radius: '<#00D8FF>▶ <white>Вы вошли на территорию <gold>Ядра Солнца<#E7E7E7>. Находитесь в радиусе <#00D8FF>%block_radius% блоков<#E7E7E7>, чтобы получать %reward_mode%<white>.'
 
-# Редактор предметов (/wellsun editor)
+# Редактор предметов (/beesun editor)
 editor:
   title: '<#00D8FF>&lЯдро Солнца &8| &fПредметы &7(Стр. %page%/%max_page%)'
   opened: '<#00D8FF>▶ <white>Открыт редактор предметов <gray>(Страница %page%/%max_page%)<white>. Выложите нужные предметы.'

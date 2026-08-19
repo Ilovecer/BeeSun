@@ -1,20 +1,20 @@
-package ru.amiloxs.wellsun.config;
+package ru.amiloxs.beesun.config;
 
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.amiloxs.wellsun.WellSun;
-import ru.amiloxs.wellsun.storage.ItemStorage;
+import ru.amiloxs.beesun.BeeSun;
+import ru.amiloxs.beesun.storage.ItemStorage;
 
 public final class PluginFiles {
-    private final WellSun plugin;
+    private final BeeSun plugin;
     private FileConfiguration block;
     private FileConfiguration particle;
     private FileConfiguration messages;
     private FileConfiguration items;
     private final File itemsFile;
 
-    public PluginFiles(WellSun plugin) {
+    public PluginFiles(BeeSun plugin) {
         this.plugin = plugin;
         save("block.yml");
         save("particle.yml");

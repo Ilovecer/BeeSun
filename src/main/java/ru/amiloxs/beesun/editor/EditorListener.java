@@ -1,4 +1,4 @@
-package ru.amiloxs.wellsun.editor;
+package ru.amiloxs.beesun.editor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +12,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import ru.amiloxs.wellsun.WellSun;
+import ru.amiloxs.beesun.BeeSun;
 
 public final class EditorListener implements Listener {
-    private final WellSun plugin;
+    private final BeeSun plugin;
 
-    public EditorListener(WellSun plugin) {
+    public EditorListener(BeeSun plugin) {
         this.plugin = plugin;
     }
 
@@ -86,7 +86,7 @@ public final class EditorListener implements Listener {
             Player player = (Player) event.getPlayer();
             String msg = plugin.files().message("editor.saved");
             if (msg != null && !msg.isEmpty()) {
-                player.sendMessage(WellSun.color(msg));
+                player.sendMessage(BeeSun.color(msg));
             }
         }
     }
