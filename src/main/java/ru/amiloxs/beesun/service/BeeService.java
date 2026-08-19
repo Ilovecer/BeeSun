@@ -15,14 +15,25 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import ru.amiloxs.beesun.BeeSun;
@@ -38,10 +49,12 @@ public final class BeeService implements Listener {
     private final Map<UUID, Long> droppedItems = new HashMap<>();
     private final Set<UUID> playersInRadius = new HashSet<>();
     private Location center;
+    private Material anchorMaterial = Material.RESPAWN_ANCHOR;
     private long tick;
     private long nextReward;
     private long lastAmbient;
     private int taskId = -1;
+    private int worldRetryTaskId = -1;
 
     public BeeService(BeeSun plugin, PluginFiles files) {
         this.plugin = plugin;
@@ -50,44 +63,92 @@ public final class BeeService implements Listener {
 
     public void reload() {
         stop();
-        World world = Bukkit.getWorld(files.block().getString("anchor.world", "lobby"));
+        String worldName = files.block().getString("anchor.world", "lobby");
+        World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            world = Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().get(0);
-        }
-        if (world == null) {
-            plugin.getLogger().warning("Мир для якоря не найден.");
+            plugin.getLogger().warning("Мир '" + worldName + "' для якоря пока не загружен. Ожидание загрузки мира...");
+            startWorldRetryTask(worldName);
             return;
         }
 
+        initWorldAndAnchor(world);
+    }
+
+    private void startWorldRetryTask(String worldName) {
+        if (worldRetryTaskId != -1) {
+            Bukkit.getScheduler().cancelTask(worldRetryTaskId);
+        }
+        worldRetryTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) {
+                Bukkit.getScheduler().cancelTask(worldRetryTaskId);
+                worldRetryTaskId = -1;
+                plugin.getLogger().info("Мир '" + worldName + "' успешно загружен. Инициализация BeeSun...");
+                initWorldAndAnchor(world);
+            }
+        }, 20L, 20L);
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        String worldName = files.block().getString("anchor.world", "lobby");
+        if (event.getWorld().getName().equalsIgnoreCase(worldName)) {
+            if (center == null || center.getWorld() == null || !center.getWorld().getName().equalsIgnoreCase(worldName)) {
+                if (worldRetryTaskId != -1) {
+                    Bukkit.getScheduler().cancelTask(worldRetryTaskId);
+                    worldRetryTaskId = -1;
+                }
+                plugin.getLogger().info("Мир '" + worldName + "' загружен. Инициализация BeeSun...");
+                initWorldAndAnchor(event.getWorld());
+            }
+        }
+    }
+
+    private void initWorldAndAnchor(World world) {
         double x = files.block().getDouble("anchor.x", 0.0);
         double y = files.block().getDouble("anchor.y", 64.0);
         double z = files.block().getDouble("anchor.z", 0.0);
-        center = new Location(world, x, y, z);
+
+        Location blockLoc = new Location(world, Math.floor(x), Math.floor(y), Math.floor(z));
+
+        // Гарантируем загрузку чанка
+        if (!blockLoc.getChunk().isLoaded()) {
+            blockLoc.getChunk().load(true);
+        }
 
         String blockType = files.block().getString("anchor.block", "RESPAWN_ANCHOR");
-        Material material = Material.matchMaterial(blockType);
-        if (material != null) {
-            center.getBlock().setType(material, false);
-        }
-        center = center.getBlock().getLocation().add(0.5, 0.0, 0.5);
+        Material mat = Material.matchMaterial(blockType);
+        this.anchorMaterial = mat != null ? mat : Material.RESPAWN_ANCHOR;
+
+        blockLoc.getBlock().setType(anchorMaterial, false);
+        this.center = blockLoc.clone().add(0.5, 0.0, 0.5);
 
         loadHologramLines();
 
         tick = 0;
         nextReward = chargeTicks();
         lastAmbient = -ambientTicks();
-        taskId = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 1L, 1L).getTaskId();
-    }
 
-    public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
         }
-        taskId = -1;
+        taskId = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 1L, 1L).getTaskId();
+        plugin.getLogger().info("BeeSun якорь успешно установлен в мире " + world.getName() + " (" + blockLoc.getBlockX() + ", " + blockLoc.getBlockY() + ", " + blockLoc.getBlockZ() + ").");
+    }
+
+    public void stop() {
+        if (worldRetryTaskId != -1) {
+            Bukkit.getScheduler().cancelTask(worldRetryTaskId);
+            worldRetryTaskId = -1;
+        }
+        if (taskId != -1) {
+            Bukkit.getScheduler().cancelTask(taskId);
+            taskId = -1;
+        }
         clearHologram();
         for (UUID uuid : droppedItems.keySet()) {
             Entity entity = Bukkit.getEntity(uuid);
-            if (entity != null) {
+            if (entity != null && entity.isValid()) {
                 entity.remove();
             }
         }
@@ -96,12 +157,86 @@ public final class BeeService implements Listener {
 
         // Убираем блок якоря при выключении плагина
         if (center != null && center.getWorld() != null) {
-            center.getBlock().setType(Material.AIR, false);
+            Location blockLoc = center.getBlock().getLocation();
+            if (blockLoc.getWorld().isChunkLoaded(blockLoc.getBlockX() >> 4, blockLoc.getBlockZ() >> 4)) {
+                blockLoc.getBlock().setType(Material.AIR, false);
+            }
+            center = null;
         }
     }
 
     public void close() {
         stop();
+    }
+
+    public boolean isAnchor(Block block) {
+        if (block == null || center == null || center.getWorld() == null) return false;
+        return block.getWorld().equals(center.getWorld())
+                && block.getX() == center.getBlockX()
+                && block.getY() == center.getBlockY()
+                && block.getZ() == center.getBlockZ();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (isAnchor(event.getBlock())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDamage(BlockDamageEvent event) {
+        if (isAnchor(event.getBlock())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockBurn(BlockBurnEvent event) {
+        if (isAnchor(event.getBlock())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() != null && isAnchor(event.getClickedBlock())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (center != null) {
+            event.blockList().removeIf(this::isAnchor);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        if (center != null) {
+            event.blockList().removeIf(this::isAnchor);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        for (Block b : event.getBlocks()) {
+            if (isAnchor(b)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        for (Block b : event.getBlocks()) {
+            if (isAnchor(b)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
     }
 
     private void loadHologramLines() {
@@ -142,6 +277,12 @@ public final class BeeService implements Listener {
     private void tick() {
         if (center == null || center.getWorld() == null) return;
         tick++;
+
+        // Гарантируем наличие и целостность блока якоря
+        if (center.getBlock().getType() != anchorMaterial) {
+            center.getBlock().setType(anchorMaterial, false);
+        }
+
         cleanupDroppedItems();
         updateAnchorCharge();
 
